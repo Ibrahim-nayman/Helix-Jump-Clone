@@ -2,23 +2,37 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BallController : MonoBehaviour
 {
-   private Rigidbody _rigidbodyBall;
-   public float Speed;
+   public Rigidbody BallRigidbody;
+   public float JumpPower;
 
    private void Start()
    {
-      _rigidbodyBall = GetComponent<Rigidbody>();
+      
    }
-
-
    private void Update()
    {
-      if (Input.GetMouseButtonDown(0))
+   }
+
+   private void OnCollisionEnter(Collision other)
+   {
+      BallRigidbody.AddForce(Vector3.up * JumpPower);
+   }
+
+   private void OnTriggerEnter(Collider other)
+   {
+      if (other.CompareTag("Win"))
       {
-         _rigidbodyBall.AddForce(new Vector3(0,Speed,0), ForceMode.Impulse);
+         StartCoroutine(LoadSceneDelay());
       }
+   }
+
+   private IEnumerator LoadSceneDelay()
+   {
+      yield return new WaitForSeconds(2f);
+      SceneManager.LoadScene("SampleScene");
    }
 }
